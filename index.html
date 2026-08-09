@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FILOMARE | Atelier Online</title>
+    
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- DESIGN SYSTEM & CSS VARIABLES --- */
+        :root {
+            --bg-primary: #faf9f6;
+            --bg-surface: #ffffff;
+            --text-main: #121212;
+            --text-muted: #6e6e73;
+            --accent-gold: #c5a880;
+            --border-light: #f0ede6;
+            --border-subtle: #e5e5ea;
+            --radius-card: 16px;
+            --radius-pill: 100px;
+            --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.08);
+            --transition-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* --- ANNOUNCEMENT BAR --- */
+        .announcement-bar {
+            background-color: var(--text-main);
+            color: #ffffff;
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: 500;
+            text-align: center;
+            padding: 10px 15px;
+        }
+
+        /* --- STICKY GLASS HEADER --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(250, 249, 246, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 16px 24px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- DROPDOWN MENU --- */
+        .dropdown { position: relative; }
+        .btn-menu {
+            background: var(--bg-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 10px 20px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s var(--transition-smooth);
+            box-shadow: var(--shadow-subtle);
+        }
+        .btn-menu:hover {
+            border-color: var(--text-main);
+            transform: translateY(-1px);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: var(--bg-surface);
+            min-width: 240px;
+            box-shadow: var(--shadow-hover);
+            border-radius: 16px;
+            overflow: hidden;
+            z-index: 1001;
+            border: 1px solid var(--border-light);
+            animation: fadeIn 0.2s var(--transition-smooth);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .dropdown-content.show { display: block; }
+        
+        .dropdown-header {
+            padding: 14px 20px 6px 20px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+        .dropdown-content a {
+            color: var(--text-main);
+            padding: 12px 20px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.15s ease;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--bg-primary);
+        }
+
+        /* --- CONTAINER PRINCIPALE --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px 80px 24px;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+        }
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        /* --- BADGES E STATUS --- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .badge-success { background: #f0fdf4; color: #166534; }
+        .badge-success .badge-dot { background: #22c55e; }
+        .badge-warning { background: #fffbeb; color: #b45309; }
+        .badge-warning .badge-dot { background: #f59e0b; }
+        .badge-danger { background: #fef2f2; color: #991b1b; }
+        .badge-danger .badge-dot { background: #ef4444; }
+
+        /* --- GRIGLIA PRODOTTI & CATEGORIE --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 32px;
+        }
+
+        .card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-card);
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: all 0.4s var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-subtle);
+            text-decoration: none;
+            color: inherit;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: transparent;
+        }
+        
+        .card-img-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 125%; /* 4:5 Aspect Ratio */
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #f5f5f7;
+        }
+        .card-img-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s var(--transition-smooth);
+        }
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .card-body {
+            padding: 18px 8px 8px 8px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+        .card-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .card-price {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        /* --- BUTTONS & CONTROLS --- */
+        .btn-back {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+        .btn-back:hover { color: var(--text-main); }
+
+        /* --- DETTAGLIO PRODOTTO (MODERN VUE) --- */
+        .detail-view {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            background: var(--bg-surface);
+            padding: 24px;
+            border-radius: 24px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .main-img-wrapper {
+            width: 100%;
+            padding-top: 120%;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f5f5f7;
+        }
+        .main-img-wrapper img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .thumbnails::-webkit-scrollbar { display: none; }
+        
+        .thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            opacity: 0.5;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .thumb:hover, .thumb.active {
+            opacity: 1;
+            border-color: var(--text-main);
+        }
+
+        .detail-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .detail-title {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .detail-price {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 12px 0;
+            color: var(--text-main);
+        }
+        .detail-desc {
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin: 20px 0 30px 0;
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border-light);
+            padding-top: 20px;
+        }
+
+        /* ACTIONS & INSTAGRAM DIRECT */
+        .actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn-buy {
+            background: var(--text-main);
+            color: #ffffff !important;
+            width: 100%;
+            padding: 18px 24px;
+            border: none;
+            border-radius: var(--radius-pill);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .btn-buy:hover {
+            background: #2a2a2e;
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(0,0,0,0.15);
+        }
+        .btn-buy.disabled {
+            background: #e5e5ea;
+            color: #a1a1a6 !important;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-subtle);
+            padding: 14px 20px;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            border-color: var(--text-main);
+            background: var(--bg-primary);
+        }
+
+        /* SVG ICONS */
+        .icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-light);
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        /* --- RESPONSIVE DESKTOP --- */
+        @media (min-width: 900px) {
+            .detail-view {
+                grid-template-columns: 1.1fr 0.9fr;
+                padding: 40px;
+                gap: 50px;
+            }
+            .main-img-wrapper {
+                padding-top: 110%;
+            }
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA ANNUNCI -->
+    <div class="announcement-bar">
+        ✨ Collezione Esclusiva • Ordina via Direct Instagram
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="navigaA('')">
+                FILOMARE
+            </div>
+            
+            <div class="dropdown">
+                <button class="btn-menu" onclick="toggleMenu(event)">
+                    Esplora
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                <div id="dropdownMenu" class="dropdown-content">
+                    <a href="#" onclick="navigaA(''); closeMenu(); return false;">
+                        <span>🏠 Home Atelier</span>
+                    </a>
+                    <div class="dropdown-header">Collezioni</div>
+                    <div id="menuCategoriesList"></div>
+                    <div class="dropdown-header">Social</div>
+                    <a href="https://instagram.com/_filomare_" target="_blank" onclick="closeMenu()">
+                        <span>📱 Profilo Instagram</span>
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENUTI DINAMICI -->
+    <main class="container" id="app"></main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 FILOMARE • Tutti i diritti riservati</p>
+    </footer>
+
+    <script>
+        const instagramUsername = "_filomare_";
+
+        // --- CATALOGO DATI ---
+        const catalogo = [
+            {
+                id: 'Basic',
+                nome: 'Basic',
+                descrizione: 'Linea versatile e raffinata per la vita quotidiana.',
+                immagine: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=800&q=80',
+                borsette: [
+                    { 
+                        id: 't1', 
+                        nome: 'Basic Nera', 
+                        prezzo: '€ 30,00', 
+                        quantita: 5,
+                        desc: 'Realizzata in pregiato filato morbido, questa borsa a tracolla combina eleganza senza tempo e praticità. Dotata di tracolla regolabile.', 
+                        immagini: [
+                            'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=1000&q=80',
+                            'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=80',
+                            'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1000&q=80'
+                        ]
+                    },
+                    { 
+                        id: 't2', 
+                        nome: 'Basic Beige ', 
+                        prezzo: '€ 30,00', 
+                        quantita: 2,
+                        desc: 'Design essenziale ed estetica minimalista. La tonalità beige neutra la rende l\'accessorio ideale per completare outfit sia casual che formali.', 
+                        immagini: [
+                            'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=1000&q=80',
+                            'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=1000&q=80'
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'pochette',
+                nome: 'Pochette ',
+                descrizione: 'Dettagli preziosi pensati per occasioni speciali.',
+                immagine: 'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=800&q=80',
+                borsette: [
+                    { 
+                        id: 'p1', 
+                        nome: 'Pochette Elegant Gold', 
+                        prezzo: '€ 25,00', 
+                        quantita: 0,
+                        desc: 'Pochette da sera, il compagno perfetto per serate ed eventi importanti.', 
+                        immagini: [
+                            'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&w=1000&q=80',
+                            'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=80'
+                        ]
+                    }
+                ]
+            },
+            
+            {
+                id: 'Paiette', // un ID unico, tutto minuscolo e senza spazi
+                nome: 'Paiette', // Il nome che apparirà sul sito
+                descrizione: 'Eleganza quotidiana da portare a mano.',
+                immagine: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80', // Immagine copertina categoria
+                borsette: [
+                    // Qui inserisci i prodotti di questa categoria
+                    { 
+                        id: 'm1', // ID unico per la borsa
+                        nome: 'Borsa a Mano in Pelle Bianca', 
+                        prezzo: '€ 38,00', 
+                        quantita: 3, // Se metti 0, scriverà "Esaurito"
+                        desc: 'Borsa a mano rigida con manici rinforzati, perfetta per l\'ufficio e il tempo libero.', 
+                        immagini: [
+                            'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=80',
+                            'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=1000&q=80'
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const appDiv = document.getElementById('app');
+
+        // --- NAVIGAZIONE & ROUTING ---
+        function navigaA(hash) {
+            window.location.hash = hash;
+        }
+
+        function gestisciNavigazione() {
+            closeMenu();
+            const hash = window.location.hash;
+
+            if (hash.startsWith('#categoria-')) {
+                const index = parseInt(hash.replace('#categoria-', ''));
+                if (!isNaN(index) && catalogo[index]) {
+                    renderListaBorsette(index);
+                    return;
+                }
+            } else if (hash.startsWith('#dettaglio-')) {
+                const parti = hash.replace('#dettaglio-', '').split('-');
+                const indCat = parseInt(parti[0]);
+                const indBor = parseInt(parti[1]);
+                if (catalogo[indCat] && catalogo[indCat].borsette[indBor]) {
+                    renderDettaglio(indCat, indBor);
+                    return;
+                }
+            }
+
+            renderCategorie();
+        }
+
+        window.addEventListener('hashchange', gestisciNavigazione);
+
+        // --- HELPER COMPONENTI ---
+        function generaBadgeDisponibilita(quantita) {
+            if (quantita > 3) {
+                return `<span class="badge badge-success"><span class="badge-dot"></span>Disponibile</span>`;
+            } else if (quantita > 0) {
+                return `<span class="badge badge-warning"><span class="badge-dot"></span>Ultimi ${quantita} pezzi</span>`;
+            } else {
+                return `<span class="badge badge-danger"><span class="badge-dot"></span>Esaurito</span>`;
+            }
+        }
+
+        function toggleMenu(event) {
+            if (event) event.stopPropagation();
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        function closeMenu() {
+            document.getElementById('dropdownMenu').classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.btn-menu')) closeMenu();
+        }
+
+        function popolaMenuCategorie() {
+            const container = document.getElementById('menuCategoriesList');
+            let html = '';
+            catalogo.forEach((categoria, index) => {
+                html += `<a href="#" onclick="navigaA('categoria-${index}'); closeMenu(); return false;"><span>📁 ${categoria.nome}</span></a>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function cambiaImmagine(url, elemento) {
+            const mainImg = document.getElementById('mainImg');
+            mainImg.style.opacity = '0.2';
+            setTimeout(() => {
+                mainImg.src = url;
+                mainImg.style.opacity = '1';
+            }, 200);
+
+            const thumbs = document.querySelectorAll('.thumb');
+            thumbs.forEach(t => t.classList.remove('active'));
+            elemento.classList.add('active');
+        }
+
+        function copiaNomeProdotto(nome) {
+            navigator.clipboard.writeText(`Ciao! Vorrei ordinare: ${nome}`);
+            alert('✓ Nome del prodotto copiato! Ora puoi incollarlo nella chat Direct su Instagram.');
+        }
+
+        // --- RENDER VISTE ---
+
+        function renderCategorie() {
+            let html = `
+                <div class="section-header">
+                    <h1 class="section-title">Le Collezioni</h1>
+                    <p class="section-subtitle">Scopri la selezione curata di borse ed accessori stilizzati.</p>
+                </div>
+                <div class="grid">
+            `;
+            
+            catalogo.forEach((categoria, index) => {
+                html += `
+                    <div class="card" onclick="navigaA('categoria-${index}')">
+                        <div class="card-img-wrapper">
+                            <img src="${categoria.immagine}" alt="${categoria.nome}">
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <h3 class="card-title">${categoria.nome}</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">${categoria.descrizione}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            appDiv.innerHTML = html;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function renderListaBorsette(indiceCategoria) {
+            const categoria = catalogo[indiceCategoria];
+            let html = `
+                <button class="btn-back" onclick="navigaA('')">← Torna alle Collezioni</button>
+                <div class="section-header">
+                    <h1 class="section-title">${categoria.nome}</h1>
+                    <p class="section-subtitle">${categoria.descrizione}</p>
+                </div>
+                <div class="grid">
+            `;
+            
+            categoria.borsette.forEach((borsetta, indexBorsa) => {
+                const fotoCopertina = borsetta.immagini[0];
+                const badgeHTML = generaBadgeDisponibilita(borsetta.quantita);
+
+                html += `
+                    <div class="card" onclick="navigaA('dettaglio-${indiceCategoria}-${indexBorsa}')">
+                        <div class="card-img-wrapper">
+                            <img src="${fotoCopertina}" alt="${borsetta.nome}">
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <h3 class="card-title">${borsetta.nome}</h3>
+                                <div class="card-price">${borsetta.prezzo}</div>
+                            </div>
+                            <div>
+                                ${badgeHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            appDiv.innerHTML = html;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function renderDettaglio(indiceCategoria, indexBorsa) {
+            const borsa = catalogo[indiceCategoria].borsette[indexBorsa];
+            const badgeHTML = generaBadgeDisponibilita(borsa.quantita);
+            
+            let thumbnailsHTML = '';
+            borsa.immagini.forEach((imgUrl, i) => {
+                const activeClass = i === 0 ? 'active' : '';
+                thumbnailsHTML += `
+                    <img class="thumb ${activeClass}" 
+                         src="${imgUrl}" 
+                         alt="${borsa.nome}" 
+                         onclick="cambiaImmagine('${imgUrl}', this)">
+                `;
+            });
+
+            const isEsaurito = borsa.quantita === 0;
+            const igDirectUrl = `https://ig.me/m/${instagramUsername}`;
+            const igProfileUrl = `https://instagram.com/${instagramUsername}`;
+
+            let azioniHTML = '';
+            if (isEsaurito) {
+                azioniHTML = `<a class="btn-buy disabled">Prodotto Attualmente Esaurito</a>`;
+            } else {
+                azioniHTML = `
+                    <div class="actions-group">
+                        <a href="${igDirectUrl}" target="_blank" class="btn-buy">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                            Ordina su Instagram Direct
+                        </a>
+                        <button class="btn-secondary" onclick="copiaNomeProdotto('${borsa.nome}')">
+                            📋 Copia nome prodotto per la chat
+                        </button>
+                        <a href="${igProfileUrl}" target="_blank" class="btn-secondary">
+                            ↗ Vai al profilo @_filomare_
+                        </a>
+                    </div>
+                `;
+            }
+
+            appDiv.innerHTML = `
+                <button class="btn-back" onclick="navigaA('categoria-${indiceCategoria}')">← Torna a ${catalogo[indiceCategoria].nome}</button>
+                <div class="detail-view">
+                    <div class="gallery-container">
+                        <div class="main-img-wrapper">
+                            <img id="mainImg" src="${borsa.immagini[0]}" alt="${borsa.nome}">
+                        </div>
+                        <div class="thumbnails">
+                            ${thumbnailsHTML}
+                        </div>
+                    </div>
+
+                    <div class="detail-content">
+                        <div>
+                            ${badgeHTML}
+                            <h1 class="detail-title" style="margin-top: 12px;">${borsa.nome}</h1>
+                            <div class="detail-price">${borsa.prezzo}</div>
+                        </div>
+                        
+                        <p class="detail-desc">${borsa.desc}</p>
+                        
+                        ${azioniHTML}
+                    </div>
+                </div>
+            `;
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Avvio app
+        popolaMenuCategorie();
+        gestisciNavigazione();
+    </script>
+</body>
+</html>
